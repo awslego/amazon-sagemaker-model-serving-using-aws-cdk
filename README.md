@@ -278,7 +278,7 @@ First of all, enter your project basic configuration in the follwoing document: 
         "Stage": "Demo",
         "Account": "75157*******",
         "Region": "us-east-1",
-        "Profile": "cdk-demo"
+        "Profile": "default"
     },
     ...
     ...
