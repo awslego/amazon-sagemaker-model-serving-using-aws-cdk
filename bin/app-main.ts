@@ -27,8 +27,6 @@ import { ModelServingStack } from './stack/model-serving/model-serving-stack';
 import { APIHostingStack } from './stack/api-hosting/api-hosting-stack';
 import { MonitorDashboardStack } from './stack/monitor-dashboard/monitor-dashboard-stack';
 import { CicdPipelineStack } from './stack/cicd-pipeline/cicd-pipeline-stack';
-import { APITestingStack } from './stack/api-testing/api-testing-stack';
-import { TesterDashboardStack } from './stack/monitor-dashboard/tester-dashboard-stack';
 
 
 let appConfig: any = loadConfig('config/app-config.json');
@@ -52,7 +50,3 @@ new APIHostingStack(cdkApp, stackCommonProps, appConfig.Stack.APIHosting);
 new MonitorDashboardStack(cdkApp, stackCommonProps, appConfig.Stack.MonitorDashboard);
 
 new CicdPipelineStack(cdkApp, stackCommonProps, appConfig.Stack.CICDPipeline);
-
-new APITestingStack(cdkApp, stackCommonProps, appConfig.Stack.APITesting);
-
-new TesterDashboardStack(cdkApp, stackCommonProps, appConfig.Stack.TesterDashboard);

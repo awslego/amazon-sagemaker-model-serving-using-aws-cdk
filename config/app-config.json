@@ -94,19 +94,6 @@
 
             "RepositoryName": "",
             "BranchName": ""
-        },
-        "APITesting": {
-            "Name": "APITestingStack",
-
-            "SNSTopicName": "TestTrigger",
-
-            "LambdaFunctionName": "TestTrigger",
-            "TestClientCount": 5
-        },
-        "TesterDashboard": {
-            "Name": "TesterDashboardStack",
-
-            "DashboardName": "TesterDashboard"
         }
     }
 }

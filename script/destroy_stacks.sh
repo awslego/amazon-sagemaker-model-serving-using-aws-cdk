@@ -17,8 +17,6 @@ echo .
 echo .
 
 echo ==--------DestroyStacksStepByStep---------==
-cdk destroy *-TesterDashboardStack --force --profile $PROFILE_NAME
-cdk destroy *-APITestingStack --force --profile $PROFILE_NAME
 cdk destroy *-CICDPipelineStack --force --profile $PROFILE_NAME
 cdk destroy *-MonitorDashboardStack --force --profile $PROFILE_NAME
 cdk destroy *-APIHostingStack --force --profile $PROFILE_NAME
