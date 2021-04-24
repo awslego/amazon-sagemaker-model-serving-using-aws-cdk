@@ -4,7 +4,9 @@ This repository provides AI/ML service(MachineLearning model serving) modernizat
 ([Origin](https://github.com/aws-samples/amazon-sagemaker-model-serving-using-aws-cdk))
 
 ## Contents
- 
+## 
+0. [**Build Environment**](#build-environment)
+   
 1. [**Repository structure**](#repository-structure)
 
 2. [**Solution coverage**](#solution-coverage)
@@ -87,18 +89,13 @@ This repository provides AI/ML service(MachineLearning model serving) modernizat
 
 ## **Repository structure**
 
-This repository is basically a CDK-Project, but it is organized as follows so that MLDevOps(ML Scientist + SW Developer + Infra Operator) can collaborate.
-
-- bin/stack directory: for Infra Operator
-- codes/lambda directory: for SW Developer
-- models/model-a: for ML Scientist
-- config/app-config.json: a place where all developer(MLDevOps) can collaborate, ***Configuration Driven Development*** approach can coordinate each other's interfaces through configuration.
+This repository is basically a CDK-Project, but it is organized so that MLDevOps(ML Scientist + SW Developer + Infra Operator) can collaborate.
 
 ![ProjectStructure](docs/asset/project_structure.png)
 
 ## **Solution coverage**
 
-When considering AI/ML services development & operation (DevOps), there are various considerations other than model serving. For example, A/B testing, monitoring, data collection, etc. should be considered together for continuous service improvement. To meet these considerations, this solution covers the areas highlighted in the figure below.
+When considering AI/ML services development & operation (DevOps), there are various considerations other than model serving. 
 
 - Model Deployment: Models Archiving, Multiple Models Serving, Realtime Prediction
 - Monitoring & Debugging: Endpoint Testing, Resource Monitoring
@@ -108,15 +105,7 @@ When considering AI/ML services development & operation (DevOps), there are vari
 
 ## **Solution approach**
 
-In order to agile development and operation of such complex **AI/ML services**, we approach from [**Application Modernization**](https://aws.amazon.com/modern-apps) perspective, which can be summarized into features such as:
-
-- Application Architecture: Modular Microservices
-- Software Delivery: Automation, Abstraction, & Standardization
-- Data Strategy: Decoupled & Purpose Built
-- Operations: As Serverless as Possible
-- Management & Governance: Programmatic Guardrails
-
-Finally, we can design the architecture by placing the following services in the right place.
+In order to agile development and operation of such complex **AI/ML services**, we approach from [**Application Modernization**](https://aws.amazon.com/modern-apps) perspective
 
 - Application Architecture: as small as possible and divide it into the multiple stacks
 - Software Delivery: CICD-based and IaC-based automation deploy
@@ -128,7 +117,7 @@ Finally, we can design the architecture by placing the following services in the
 
 ## **Solution architecture**
 
-Basically this architecture is designed to provide a realtime endpoint using ML models. In this architecture, ***Application Modernization*** approach was applied to develop and operate agile and stable services.
+Basically this architecture is designed to provide a realtime endpoint using ML models. 
 
 ![SolutionArchitecture](docs/asset/solution_architecture.png)
 
@@ -160,9 +149,9 @@ AWS services used are as follows:
 
 ## **How to prepare ML model**
 
-Becuase this solution assumes that the model is previously provided by data scientists, ML model training and tuning is outside the scope of this solution. So we use the simple example model for the purpose of model serving. We will use Pytorch-based [text classification model](https://github.com/pytorch/text/tree/master/examples/text_classification) which is provided in [**pytorch/text**](https://github.com/pytorch/text).
+We use the simple example model for the purpose of model serving. We will use Pytorch-based [text classification model](https://github.com/pytorch/text/tree/master/examples/text_classification) which is provided in [**pytorch/text**](https://github.com/pytorch/text).
 
-In any directory, execute the following commands to train model and finally get ML model file(***model.pth***) and vocabulary file(***vocab.pth***). These commands train Text-Classification model using AG_NEWS dataset under CPU environment. This model takes text as input and classifies one of the following four labels.
+These commands train Text-Classification model using AG_NEWS dataset under CPU environment. This model takes text as input and classifies one of the following four labels.
 
 - 1: 'World'
 - 2: 'Sports'
@@ -254,7 +243,6 @@ To efficiently define and provision serverless resources, AWS CDK is utilized. B
 
 Because this solusion is implemented in CDK, we can deploy these cloud resources using CDK CLI. Among the various languages supported, this solution used typescript. Because the types of **typescript** are very strict, with the help of auto-completion, typescrip offers a very nice combination with AWS CDK.
 
-***Caution***: This solution contains not-free tier AWS services. So be careful about the possible costs. Fortunately, serverless services minimize cost if not used(Amazon SageMaker's Endpoint is not serverless).
 
 ### **Prerequisites**
 
