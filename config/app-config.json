@@ -4,7 +4,7 @@
         "Stage": "Demo",
         "Account": "75157*******",
         "Region": "us-east-1",
-        "Profile": "cdk-demo"
+        "Profile": "default"
     },
 
     "Stack": {

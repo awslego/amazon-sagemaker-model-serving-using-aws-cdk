@@ -60,18 +60,19 @@ This repository provides AI/ML service(MachineLearning model serving) modernizat
    aws s3 cp s3://textclassificationdemo-model-archiving-ap-northeast-2-51959/models/model-a/model/model.tar.gz models/model-a/src/
    cd models/model-a/src
    tar zxvf model.tar.gz
+   mv model.tar.gz ../model/
    cd ../ 
-   cp -r . ../../model-b/src/
+   cp -r . ../model-b/
    
    sudo yum install -y jq
    
-   aws sts get-caller-identity --output text | gawk '{print $2 }' 
+   aws sts get-caller-identity --output text | gawk '{print $2}' 
    cat ~/.aws/credentials
    ```
 1. Open config/app-config.json
    + Change Project account=YOUR_ACCOUNT, profile=default
 1. Follow Section How to set up , How to provision , How to test
-1. Create CICD
+1. Create codecommit & Push codes
    + Create codecommit repository & push codes to codecommit
    ```bash
    aws codecommit create-repository --repository-name TextClassificationDemo 
@@ -82,9 +83,20 @@ This repository provides AI/ML service(MachineLearning model serving) modernizat
    git commit -m "Update CICD Pipeline"
    git push alias-remote main
    ```
-1. run scripts
+1. Deploy CICD   
+   + Edit config/app-config.json
+   ```bash   
+           "CICDPipeline": {
+            "Name": "CICDPipelineStack",
+
+            "RepositoryName": "TextClassificationDemo",
+            "BranchName": "main"
+        },
+   ```
+   + run scripts
    ```bash
-   sh script/deploy_stacks.sh
+   #sh script/deploy_stacks.sh
+   cdk deploy *-CICDPipelineStack --require-approval never --profile default
    ```
 
 ## **Repository structure**
@@ -276,7 +288,7 @@ First of all, enter your project basic configuration in the follwoing document: 
 If you don't know AWS Account/Region, execute the following commands to catch your AWS-Account.
 
 ```bash
-aws sts get-caller-identity --profile [your-profile-name]
+aws sts get-caller-identity --profile default
 ...
 ...
 {
@@ -294,35 +306,33 @@ sh ./script/setup_initial.sh
 
 ### **How to provision**
 
-Let's check stacks included in this CDK-Project before provisining. Execute the following command. The prefix "***TextClassificationDemo***" can be different according to your setting(Project Name/Stage).
-
+Let's check stacks included in this CDK-Project before provisining. Execute the following command. The prefix is "***TextClassificationDemo***" (Project Name/Stage in config/app-config.json).
+refer to [CDK CLI](https://docs.aws.amazon.com/cdk/latest/guide/cli.html)
 ```bash
 cdk list
-...
-...
-TextClassificationDemo-APIHostingStack
-TextClassificationDemo-APITestingStack
-TextClassificationDemo-CICDPipelineStack
-TextClassificationDemo-ModelArchivingStack
-TextClassificationDemo-ModelServingStack
-TextClassificationDemo-MonitorDashboardStack
-TextClassificationDemo-TesterDashboardStack
 ```
 
-Each item in "Stack" of ***app-config.json*** represents a stack of the same name. Each stack performs the follwoing roles:
-
+Each item in "Stack" of ***app-config.json*** represents a stack of the same name. 
+Each stack performs the follwoing roles:
 - TextClassificationDemo-ModelArchivingStack: create S3 Bucket, and upload model.tar.gz into S3 Bucket
 - TextClassificationDemo-ModelServingStack: create SageMaker Model, EndpointConfiguration, Endpoint, and Inference Input/Output Logging(Data capture)
 - TextClassificationDemo-APIHostingStack: create API Gateway and Lambda Function
 - TextClassificationDemo-MonitorDashboardStack: create CloudWatch Dashboard, Alarm, SNS, and SES
 - TextClassificationDemo-CICDPipelineStack: create CodePipeline, CodeBuild
-- TextClassificationDemo-APITestingStack: create SNS and Lambda Functions
-- TextClassificationDemo-TesterDashboardStack: create CloudWatch Dashboard to present test results
 
 Now, everything is ready, let's provision all stacks using AWS CDK. Execute the following command which will deploy all stacks in order of subordination.
 
 ```bash
-sh script/deploy_stacks.sh
+#sh script/deploy_stacks.sh
+cdk deploy *-ModelArchivingStack --require-approval never --profile default
+
+cdk deploy *-ModelServingStack --require-approval never --profile default
+
+cdk deploy *-APIHostingStack --require-approval never --profile default
+
+cdk deploy *-MonitorDashboardStack --require-approval never --profile default
+
+#cdk deploy *-CICDPipelineStack --require-approval never --profile default
 ```
 
 ## **How to test**

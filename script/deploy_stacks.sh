@@ -3,7 +3,7 @@
 # Configuration File Path
 CONFIG_INFRA=config/app-config.json
 
-PROFILE_NAME=$(cat $CONFIG_INFRA | jq -r '.Project.Profile') #ex> cdk-demo
+PROFILE_NAME=$(cat $CONFIG_INFRA | jq -r '.Project.Profile') #ex> default
 
 echo ==--------ConfigInfo---------==
 echo $CONFIG_INFRA

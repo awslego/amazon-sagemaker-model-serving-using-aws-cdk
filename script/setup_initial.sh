@@ -4,7 +4,7 @@
 CONFIG_INFRA=config/app-config.json
 
 echo ==--------CheckDedendencies---------==
-npm install -g aws-cdk
+sudo npm install -g aws-cdk
 aws --version
 npm --version
 cdk --version
