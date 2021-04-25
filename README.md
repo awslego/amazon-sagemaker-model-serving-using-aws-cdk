@@ -337,44 +337,7 @@ cdk deploy *-MonitorDashboardStack --require-approval never --profile default
 
 ## **How to test**
 
-For testing, execute the following command, which will send SNS message and finally the lambda functions will be executed to call API Gateway.
-
-```bash
-sh script/trigger_tests.sh
-...
-...
-{
-    "MessageId": "e78906f5-4544-5e19-9191-5e9ea2a859bd"
-}
-```
-
-The number of tester lambda(TestClientCount) can be modified. Just change ***TestClientCount*** in ***app-config.json***, and then deploy ***TextClassificationDemo-APITestingStack*** again.
-
-```json
-...
-        "APITesting": {
-            "Name": "APITestingStack",
-
-            "SNSTopicName": "TestTrigger",
-
-            "LambdaFunctionName": "TestTrigger",
-            "TestClientCount": 5
-        },
-...
-```
-
-And test duration(DurationInSec), and test interval(IntervalInSec) can be modified according to your test scenario. Please change ***input_data.json*** in ***script*** directory which is the message of SNS.
-
-```json
-...
-{
-    "Config": {
-        "IntervalInSec": 10,
-        "DurationInSec": 600
-    },
-...
-...
-```
+For testing, execute API Gateway, the lambda functions will be executed to call API Gateway.
 
 ## **How to monitor**
 
