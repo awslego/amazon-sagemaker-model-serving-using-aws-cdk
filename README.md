@@ -103,7 +103,7 @@ This repository provides AI/ML service(MachineLearning model serving) modernizat
 
 This repository is basically a CDK-Project, but it is organized so that MLDevOps(ML Scientist + SW Developer + Infra Operator) can collaborate.
 
-![ProjectStructure](docs/asset/project_structure.png)
+![ProjectStructure](docs/asset/project_structure2.png)
 
 ## **Solution coverage**
 
@@ -131,7 +131,7 @@ In order to agile development and operation of such complex **AI/ML services**, 
 
 Basically this architecture is designed to provide a realtime endpoint using ML models. 
 
-![SolutionArchitecture](docs/asset/solution_architecture.png)
+![SolutionArchitecture](docs/asset/solution_architecture2.png)
 
 Each stack provides the follwing functions. In particular, the common functions of each stack are provided through ***BaseStack*** class by utilizing the characteristics of an object-oriented programming. Parameters such as resource name/ARN are shared between each stack through ***Parameter Store*** in AWS Systems Manager.
 
