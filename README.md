@@ -331,8 +331,6 @@ cdk deploy *-ModelServingStack --require-approval never --profile default
 cdk deploy *-APIHostingStack --require-approval never --profile default
 
 cdk deploy *-MonitorDashboardStack --require-approval never --profile default
-
-#cdk deploy *-CICDPipelineStack --require-approval never --profile default
 ```
 
 ## **How to test**
