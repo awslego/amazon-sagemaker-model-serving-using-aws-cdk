@@ -5,6 +5,8 @@ CONFIG_INFRA=config/app-config.json
 
 echo ==--------CheckDedendencies---------==
 sudo npm install -g aws-cdk
+sudo yum install -y jq
+
 aws --version
 npm --version
 cdk --version

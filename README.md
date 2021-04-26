@@ -1,135 +1,63 @@
 # Amazon SageMaker Model Serving using AWS CDK
 
 This repository provides AI/ML service(MachineLearning model serving) modernization solution using [Amazon SageMaker](https://aws.amazon.com/sagemaker), [AWS CDK](https://aws.amazon.com/cdk), and [AWS Serverless services](https://aws.amazon.com/serverless).
-([Origin](https://github.com/aws-samples/amazon-sagemaker-model-serving-using-aws-cdk))
+(refer to [origin](https://github.com/aws-samples/amazon-sagemaker-model-serving-using-aws-cdk))
 
-## Contents
-## 
-0. [**Build Environment**](#build-environment)
-   
+## Contents ## 
+
 1. [**Repository structure**](#repository-structure)
 
-2. [**Solution coverage**](#solution-coverage)
-  
-3. [**Solution approach**](#solution-approach)
+2. [**Solution approach**](#solution-approach)
 
-4. [**Solution architecture**](#solution-architecture)
+3. [**Solution architecture**](#solution-architecture)
 
-5. [**How to prepare ML model**](#how-to-prepare-ml-model)
+4. [**How to prepare ML model**](#how-to-prepare-ml-model)
 
-6. [**How to deploy**](#how-to-deploy)
+5. [**Build Environment**](#build-environment)
 
-    - [**Prerequisites**](#prerequisites)
-    - [**How to set up**](#how-to-set-up)
-    - [**How to provision**](#how-to-provision)
+6. [**How to set up**](#how-to-set-up)
+   
+7. [**How to provision**](#how-to-provision)
 
-7. [**How to test**](#how-to-test)
+8. [**How to test**](#how-to-test)
 
-8. [**How to monitor**](#how-to-monitor)
+9. [**How to automate CICD**](#how-to-automate-cicd)
 
-9. [**How to change model and endpoint configration**](#how-to-change-model-and-endpoint-configration)
+10. [**How to change model and endpoint configration**](#how-to-change-model-and-endpoint-configration)
 
-10. [**How to set up auto-scaling**](#how-to-set-up-auto-scaling)
+11. [**How to set up auto-scaling**](#how-to-set-up-auto-scaling)
 
-11. [**How to add model-b**](#how-to-add-model-b)
+12. [**How to add model-b**](#how-to-add-model-b)
 
-12. [**How to configure Logging-Path**](#how-to-configure-logging-path)
-
-13. [**About CDK-Project**](#about-cdk-project)
+13. [**How to monitor**](#how-to-monitor)
 
 14. [**How to clean up**](#how-to-clean-up)
 
-15. [**Security**](#security)
-
-16. [**License**](#license)
+15. [**About CDK-Project**](#about-cdk-project)
 
 
-## **Build Environment**
 
-1. Region = us-east-1
-1. Go to Cloud9
-   + Create Cloud9 Environment > us-east-1a > m5.large > EBS 100GB
-1. Go to CloudFormation : Check Status
-1. Go to Cloud 9, Click "Open IDE" > Click "bash - terminal" on the bottom
-1. run scripts
-
-   ```bash
-   git clone https://github.com/awslego/amazon-sagemaker-model-serving-using-aws-cdk.git 
-   cd amazon-sagemaker-model-serving-using-aws-cdk
-   
-   aws s3 cp s3://textclassificationdemo-model-archiving-ap-northeast-2-51959/models/model-a/model/model.tar.gz models/model-a/src/
-   cd models/model-a/src
-   tar zxvf model.tar.gz
-   mv model.tar.gz ../model/
-   cd ../ 
-   cp -r . ../model-b/
-   
-   sudo yum install -y jq
-   
-   aws sts get-caller-identity --output text | gawk '{print $2}' 
-   cat ~/.aws/credentials
-   ```
-1. Open config/app-config.json
-   + Change Project account=YOUR_ACCOUNT, profile=default
-1. Follow Section How to set up , How to provision , How to test
-1. Create codecommit & Push codes
-   + Create codecommit repository & push codes to codecommit
-   ```bash
-   aws codecommit create-repository --repository-name TextClassificationDemo 
-   
-   git remote add alias-remote https://git-codecommit.us-east-1.amazonaws.com/v1/repos/TextClassificationDemo
-   git status
-   git add *
-   git commit -m "Update CICD Pipeline"
-   git push alias-remote main
-   ```
-1. Deploy CICD   
-   + Edit config/app-config.json
-   ```bash   
-           "CICDPipeline": {
-            "Name": "CICDPipelineStack",
-
-            "RepositoryName": "TextClassificationDemo",
-            "BranchName": "main"
-        },
-   ```
-   + run scripts
-   ```bash
-   #sh script/deploy_stacks.sh
-   cdk deploy *-CICDPipelineStack --require-approval never --profile default
-   ```
-
-## **Repository structure**
+## **1. Repository structure**
 
 This repository is basically a CDK-Project, but it is organized so that MLDevOps(ML Scientist + SW Developer + Infra Operator) can collaborate.
 
 ![ProjectStructure](docs/asset/project_structure2.png)
 
-## **Solution coverage**
 
-When considering AI/ML services development & operation (DevOps), there are various considerations other than model serving. 
-
-- Model Deployment: Models Archiving, Multiple Models Serving, Realtime Prediction
-- Monitoring & Debugging: Endpoint Testing, Resource Monitoring
-- Data Collection: Inference History Logging
-
-![MacineLearningWorkflowRoI](docs/asset/machinelearning_workflow_roi.png)
-
-## **Solution approach**
+## **2. Solution approach**
 
 In order to agile development and operation of such complex **AI/ML services**, we approach from [**Application Modernization**](https://aws.amazon.com/modern-apps) perspective
+including serverless and container, CICD-based and IaC-based automation deploy/
 
-- Application Architecture: as small as possible and divide it into the multiple stacks
-- Software Delivery: CICD-based and IaC-based automation deploy
-- Data Strategy: individual storage selection for each logging purpose
-- Operations: only serverless and container
-- Management & Governance: monitoring & testing
+- Data Collection: Inference History Logging
+- Model Deployment: Models Archiving, Multiple Models Serving, Realtime Prediction
+- Monitoring & Debugging: Endpoint Testing, Resource Monitoring
 
 ![MacineLearningWorkflowServices](docs/asset/machinelearning_workflow_services.png)
 
-## **Solution architecture**
+## **3. Solution architecture**
 
-Basically this architecture is designed to provide a realtime endpoint using ML models. 
+Basically this architecture is designed to provide a realtime endpoint using ML models.
 
 ![SolutionArchitecture](docs/asset/solution_architecture2.png)
 
@@ -140,8 +68,7 @@ Each stack provides the follwing functions. In particular, the common functions 
 - API Hosting Stack: Serverless API Endpoint & Http Request Handling
 - Monitor Dashboard: Serverless Resource Monitoring & Alarm
 - CICD Pipeline: Continuous Integration & Continuous Deploy
-- API Testing: Serverless Tester Agent
-- Tester Dashboard: Testing State Monitoring
+
 
 ![StackDependency](docs/asset/stack_dependency.png)
 
@@ -151,15 +78,15 @@ AWS services used are as follows:
 - [Amazon API Gateway](https://aws.amazon.com/api-gateway): a fully managed service that makes it easy for developers to create, publish, maintain, monitor, and secure APIs at any scale
 - [Amazon Simple Storage Service(S3)](https://aws.amazon.com/s3): object storage built to store and retrieve any amount of data from anywhere
 - [Amazon Lambda](https://aws.amazon.com/lambda): a serverless computing which run code without thinking about servers
-- [Amazon Simple Notification Service(SNS)](https://aws.amazon.com/sns): a fully managed messaging service for both application-to-application (A2A) and application-to-person (A2P) communication
-- [Amazon Simple Email Service(SES)](https://aws.amazon.com/ses): a cost-effective, flexible, and scalable email service that enables developers to send mail from within any application
 - [Amazon CloudWatch](https://aws.amazon.com/cloudwatch): a monitoring and observability service built for DevOps engineers, developers, site reliability engineers (SREs), and IT managers
 - [Amazon System Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html): secure, hierarchical storage for configuration data management and secrets management
 - [AWS CodePipeline](https://aws.amazon.com/codepipeline): a fully managed continuous delivery service that helps you automate your release pipelines for fast and reliable application and infrastructure updates
 - [AWS CloudFormation](https://aws.amazon.com/cloudformation): an easy way to model a collection of related AWS and third-party resources, provision them quickly and consistently, and manage them throughout their lifecycles, by treating infrastructure as code
 - [AWS Cloud Development Kit(CDK)](https://aws.amazon.com/cdk): an open source software development framework to define your cloud application resources using familiar programming languages
 
-## **How to prepare ML model**
+
+
+## **4. How to prepare ML model**
 
 We use the simple example model for the purpose of model serving. We will use Pytorch-based [text classification model](https://github.com/pytorch/text/tree/master/examples/text_classification) which is provided in [**pytorch/text**](https://github.com/pytorch/text).
 
@@ -246,31 +173,60 @@ models/
     ...
 ```
 
+## **5. Build Environment**
 
-## **How to deploy**
+1. Region = us-east-1
+1. Go to Cloud9
+   + Create Cloud9 Environment > us-east-1a > m5.large > EBS 100GB
+1. Go to CloudFormation : Check Status
+1. Go to Cloud 9, Click "Open IDE" > Click "bash - terminal" on the bottom
+1. run scripts 
 
-To efficiently define and provision serverless resources, AWS CDK is utilized. Because AWS CDK uses familiar programming languages for modeling modern applications, we can provision in a safe, repeatable manner through AWS CloudFormation.
+   ```bash
+   git clone https://github.com/awslego/amazon-sagemaker-model-serving-using-aws-cdk.git 
+   cd amazon-sagemaker-model-serving-using-aws-cdk
+   
+   aws s3 cp s3://textclassificationdemo-model-archiving-ap-northeast-2-51959/models/model-a/model/model.tar.gz models/model-a/src/
+   cd models/model-a/src
+   tar zxvf model.tar.gz
+   mv model.tar.gz ../model/
+   cd ../ 
+   cp -r . ../model-b/
+   
+   ```
 
-![AWSCDKIntro](docs/asset/aws_cdk_intro.png)
+1. Create codecommit & Push codes
 
-Because this solusion is implemented in CDK, we can deploy these cloud resources using CDK CLI. Among the various languages supported, this solution used typescript. Because the types of **typescript** are very strict, with the help of auto-completion, typescrip offers a very nice combination with AWS CDK.
+   ```bash
+   aws codecommit create-repository --repository-name TextClassificationDemo 
+   
+   git remote add alias-remote https://git-codecommit.us-east-1.amazonaws.com/v1/repos/TextClassificationDemo
+   git status
+   git add *
+   git commit -m "Update CICD Pipeline"
+   git push alias-remote main
+   ```
+1. Follow Section How to set up , How to provision , How to test
 
 
-### **Prerequisites**
 
+## **6. How to set up**
+
+※ Prerequisites <br/>
 First of all, AWS Account and IAM User is required. And then the following must be installed.
+```bash
+node --version
+cdk --version
+jq --version
 
-- AWS CLI: aws configure --profile [profile name]
-- Node.js: node --version
-- AWS CDK: cdk --version
-- [jq](https://stedolan.github.io/jq/): jq --version
+aws configure --profile default
+cat ~/.aws/credentials   
+```
 
-Please refer to the kind guide in [CDK Workshop](https://cdkworkshop.com/15-prerequisites.html).
+Enter your project basic configuration in the follwoing document: config/app-config.json. 
 
-### **How to set up**
-
-First of all, enter your project basic configuration in the follwoing document: ***config/app-config.json***. Fill in your project's "Name", "Stage", "Account", "Region", "Profile(AWS CLI Credentials)" in "Project" according to your environments.
-
++ Fill in your project's "Name", "Stage", "Account", "Region", "Profil" in "Project".
++ Fill in your project's "RepositoryName", "BranchName"  in "CICDPipeline".
 ```json
 {
     "Project": {
@@ -282,7 +238,13 @@ First of all, enter your project basic configuration in the follwoing document: 
     },
     ...
     ...
-}
+ 
+        "CICDPipeline": {
+         "Name": "CICDPipelineStack",
+         "RepositoryName": "TextClassificationDemo",
+         "BranchName": "main"
+     },
+}     
 ```
 
 If you don't know AWS Account/Region, execute the following commands to catch your AWS-Account.
@@ -304,7 +266,7 @@ And then execute the following commands to set up CDK-Project. For details, plea
 sh ./script/setup_initial.sh  
 ```
 
-### **How to provision**
+## **7. How to provision**
 
 Let's check stacks included in this CDK-Project before provisining. Execute the following command. The prefix is "***TextClassificationDemo***" (Project Name/Stage in config/app-config.json).
 refer to [CDK CLI](https://docs.aws.amazon.com/cdk/latest/guide/cli.html)
@@ -320,8 +282,12 @@ Each stack performs the follwoing roles:
 - TextClassificationDemo-MonitorDashboardStack: create CloudWatch Dashboard, Alarm, SNS, and SES
 - TextClassificationDemo-CICDPipelineStack: create CodePipeline, CodeBuild
 
-Now, everything is ready, let's provision all stacks using AWS CDK. Execute the following command which will deploy all stacks in order of subordination.
+The cdk synth command synthesizes a stack defined in your app into a CloudFormation template.
+```bash
+cdk synth
+```
 
+Now, everything is ready, let's provision all stacks using AWS CDK. Execute the following command which will deploy all stacks in order of subordination.
 ```bash
 #sh script/deploy_stacks.sh
 cdk deploy *-ModelArchivingStack --require-approval never --profile default
@@ -331,71 +297,35 @@ cdk deploy *-ModelServingStack --require-approval never --profile default
 cdk deploy *-APIHostingStack --require-approval never --profile default
 
 cdk deploy *-MonitorDashboardStack --require-approval never --profile default
+
+cdk deploy *-CICDPipelineStack --require-approval never --profile default
 ```
 
-## **How to test**
+## **8. How to test**
 
-For testing, execute API Gateway, the lambda functions will be executed to call API Gateway.
-
-## **How to monitor**
-
-After a while, go to CloudWatch Dashboard(TextClassificationDemo-MonitorDashboard, TextClassificationDemo-TesterDashboard) and check the results.
-
-***TextClassificationDemo-TesterDashboard***
-
-This dashboard describes testing status. In the dashboard below, 1 SNS message was pulished and 5 lambda functions received that. ***ResponseTime-ApiGateway***, ***SuccessSum-ApiGateway***, and ***FailSum-ApiGateway*** are custom metrics sent by TesterLambda. this dashboard show that response time is about 0.05ms(this metric can be different according your environment). It can be seen that all test cases were successful, and none failed.
-![TesterDashboard](docs/asset/tester_dashboard.png)
-
-***TextClassificationDemo-MonitorDashboard***
-
-This dashboard is the current status of all resources. The following picture shows realtime status of API Gateway, Lambda function, and SageMaker Endpoint.
-
-MonitorDashboard-ApiGateway
-![MonitorDashboard-ApiGateway](docs/asset/monitor_dashboard_apigatewawy.png)
-
-MonitorDashboard-Lambda
-![MonitorDashboard-Lambda](docs/asset/monitor_dashboard_lambda.png)
-
-MonitorDashboard-SageMaker-Endpoint
-![MonitorDashboard-SageMaker-Endpoint](docs/asset/monitor_dashboard_sm_endpoint.png)
-
-***Inference History Logging - S3 Bucket***
-
-The following picture shows the logging results in S3 Bucket.
-
-Inference-History-Bucket
-![Inference-History-Bucket](docs/asset/data-capture-bucket.png)
-
-Inference-History-Jsonl
-![Inference-History-Jsonl](docs/asset/data-capture-jsonl.png)
-
-Also alarm threshold(ApiGatewayOverallCallThreshold, ApiGatewayError4xxCallThreshold, ApiGatewayError5xxCallThreshold) can be modified according to your operation scenario. Just change these items in ***app-config.json***, and then deploy ***TextClassificationDemo-MonitorDashboard***.
-
-And change SES subscription email address in ***config/app-config.json***, which will send subscription confirmation mail to "SubscriptionEmails".
-
-```json
-...
-        "MonitorDashboard": {
-            "Name": "MonitorDashboardStack",
-
-            "DashboardName": "MonitorDashboard",
-
-            "SubscriptionEmails": ["abc@amazon.com", ....],
-            "ApiGatewayOverallCallThreshold": 100,
-            "ApiGatewayError4xxCallThreshold": 20,
-            "ApiGatewayError5xxCallThreshold": 20
-        },
-...
-```
-
-Finally deploy and test again like this. ***script/deploy_stacks.sh** will deploy only changed stacks such as ***TextClassificationDemo-APITestingStack***, ***TextClassificationDemo-TesterDashboardStack***, TextClassificationDemo-MonitorDashboard.
+For testing, execute the following command, which the lambda functions will be executed to call API Gateway.
 
 ```bash
-sh script/deploy_stacks.sh
 sh script/trigger_tests.sh
+...
+...
+{
+"MessageId": "e78906f5-4544-5e19-9191-5e9ea2a859bd"
+}
 ```
 
-## **How to change model and endpoint configration**
+## **9. How to automate CICD**
+Push updated codes to codecommit. 
+```bash
+git status
+git add config/app-config.json
+git commit -m "Update cdk config "
+git push alias-remote main
+```
+
+
+
+## **10. How to change model and endpoint configration**
 
 After initial deployment, you can change to a new model file(ModelS3Key, ModelLocalPath) or change deployment settings(InstanceCount, InstanceType). If you change these settings, you must change ***ModelName***, ***EndpointConfigName***. This is mandantory, because SageMaker Model/EndpointConfig does not support to edit these values. In other words, changing these names will delete the previous Model/EndpointConfig and creat a new Model/EndpointConfig.
 If you have already ***model.tar.gz*** file in S3 Bucket so you don't need upload a local ***model.tar.gz*** file, keep ***ModelLocalPath*** empty.
@@ -430,7 +360,7 @@ If you have already ***model.tar.gz*** file in S3 Bucket so you don't need uploa
         }
 ```
 
-## **How to set up auto-scaling**
+## **11. How to set up auto-scaling**
 
 We can activate/deactivate auto-scaling feature of SageMaker Endpoint. Since this is a runtime option, you can activate/deactivate it while SageMaker Endpoint has been provisioned in advance. Therefore, you can deploy it as false at the time of initial deployment and then set it to true from the next time. For more details, please check this [document](https://docs.aws.amazon.com/sagemaker/latest/dg/endpoint-auto-scaling.html).
 
@@ -466,7 +396,7 @@ We can activate/deactivate auto-scaling feature of SageMaker Endpoint. Since thi
         },
 ```
 
-## **How to add model-b**
+## **12. How to add model-b**
 
 After preparing a new folder(models/model-b/model), add it to ***app-config.json*** like this:
 
@@ -548,7 +478,74 @@ This picture is a result of multiple(A/B Testing) model serving in SageMaker.
 
 ![MultipleModelServing](docs/asset/sagemaker_model_config_endpoint.png)
 
-## **About CDK-Project**
+
+## **13. How to monitor**
+
+After a while, go to CloudWatch Dashboard(TextClassificationDemo-MonitorDashboard, TextClassificationDemo-TesterDashboard) and check the results.
+
+***TextClassificationDemo-TesterDashboard***
+
+This dashboard describes testing status. In the dashboard below, 1 SNS message was pulished and 5 lambda functions received that. ***ResponseTime-ApiGateway***, ***SuccessSum-ApiGateway***, and ***FailSum-ApiGateway*** are custom metrics sent by TesterLambda. this dashboard show that response time is about 0.05ms(this metric can be different according your environment). It can be seen that all test cases were successful, and none failed.
+![TesterDashboard](docs/asset/tester_dashboard.png)
+
+***TextClassificationDemo-MonitorDashboard***
+
+This dashboard is the current status of all resources. The following picture shows realtime status of API Gateway, Lambda function, and SageMaker Endpoint.
+
+MonitorDashboard-ApiGateway
+![MonitorDashboard-ApiGateway](docs/asset/monitor_dashboard_apigatewawy.png)
+
+MonitorDashboard-Lambda
+![MonitorDashboard-Lambda](docs/asset/monitor_dashboard_lambda.png)
+
+MonitorDashboard-SageMaker-Endpoint
+![MonitorDashboard-SageMaker-Endpoint](docs/asset/monitor_dashboard_sm_endpoint.png)
+
+***Inference History Logging - S3 Bucket***
+
+The following picture shows the logging results in S3 Bucket.
+
+Inference-History-Bucket
+![Inference-History-Bucket](docs/asset/data-capture-bucket.png)
+
+Inference-History-Jsonl
+![Inference-History-Jsonl](docs/asset/data-capture-jsonl.png)
+
+Also alarm threshold(ApiGatewayOverallCallThreshold, ApiGatewayError4xxCallThreshold, ApiGatewayError5xxCallThreshold) can be modified according to your operation scenario. Just change these items in ***app-config.json***, and then deploy ***TextClassificationDemo-MonitorDashboard***.
+
+And change SES subscription email address in ***config/app-config.json***, which will send subscription confirmation mail to "SubscriptionEmails".
+
+```json
+...
+        "MonitorDashboard": {
+            "Name": "MonitorDashboardStack",
+
+            "DashboardName": "MonitorDashboard",
+
+            "SubscriptionEmails": ["abc@amazon.com", ....],
+            "ApiGatewayOverallCallThreshold": 100,
+            "ApiGatewayError4xxCallThreshold": 20,
+            "ApiGatewayError5xxCallThreshold": 20
+        },
+...
+```
+
+Finally deploy and test again like this. ***script/deploy_stacks.sh** will deploy only changed stacks such as ***TextClassificationDemo-APITestingStack***, ***TextClassificationDemo-TesterDashboardStack***, TextClassificationDemo-MonitorDashboard.
+
+```bash
+sh script/deploy_stacks.sh
+sh script/trigger_tests.sh
+```
+
+## **14. How to clean up**
+
+Execute the following command, which will destroy all resources except S3 Buckets. So destroy these resources in AWS web console manually.
+
+```bash
+sh script/destroy_stacks.sh
+```
+
+### **About CDK-Project**
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
@@ -560,18 +557,10 @@ And the more usuful CDK commands are
 - `cdk synth`       emits the synthesized CloudFormation template
 - `cdk destroy`     remove resources
 
-## **How to clean up**
-
-Execute the following command, which will destroy all resources except S3 Buckets. So destroy these resources in AWS web console manually.
-
-```bash
-sh script/destroy_stacks.sh
-```
-
-## **Security**
+### **Security**
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
 
-## **License**
+### **License**
 
 This library is licensed under the MIT-0 License. See the LICENSE file.
