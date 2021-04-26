@@ -202,7 +202,7 @@ models/
    git remote add alias-remote https://git-codecommit.us-east-1.amazonaws.com/v1/repos/TextClassificationDemo
    git status
    git add *
-   git commit -m "Update CICD Pipeline"
+   git commit -m "init"
    git push alias-remote main
    ```
    
