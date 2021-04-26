@@ -5,7 +5,7 @@ This repository provides AI/ML service(MachineLearning model serving) modernizat
 
 ## Contents ## 
 
-1. [**Repository structure**](#repository-structure)
+1. [**Repository structure**](#1-repository-structure)
 
 2. [**Solution approach**](#solution-approach)
 
