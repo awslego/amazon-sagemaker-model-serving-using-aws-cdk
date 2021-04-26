@@ -7,31 +7,31 @@ This repository provides AI/ML service(MachineLearning model serving) modernizat
 
 1. [**Repository structure**](#1-repository-structure)
 
-2. [**Solution approach**](#solution-approach)
+2. [**Solution approach**](#2-solution-approach)
 
-3. [**Solution architecture**](#solution-architecture)
+3. [**Solution architecture**](#3-solution-architecture)
 
-4. [**How to prepare ML model**](#how-to-prepare-ml-model)
+4. [**How to prepare ML model**](#4-how-to-prepare-ml-model)
 
-5. [**Build Environment**](#build-environment)
+5. [**Build Environment**](#5-build-environment)
 
-6. [**How to set up**](#how-to-set-up)
+6. [**How to set up**](#6-how-to-set-up)
    
-7. [**How to provision**](#how-to-provision)
+7. [**How to provision**](#7-how-to-provision)
 
-8. [**How to test**](#how-to-test)
+8. [**How to test**](#8-how-to-test)
 
-9. [**How to automate CICD**](#how-to-automate-cicd)
+9. [**How to automate CICD**](#9-how-to-automate-cicd)
 
-10. [**How to change model and endpoint configration**](#how-to-change-model-and-endpoint-configration)
+10. [**How to change model and endpoint configration**](#10-how-to-change-model-and-endpoint-configration)
 
-11. [**How to set up auto-scaling**](#how-to-set-up-auto-scaling)
+11. [**How to set up auto-scaling**](#11-how-to-set-up-auto-scaling)
 
-12. [**How to add model-b**](#how-to-add-model-b)
+12. [**How to add model-b**](#12-how-to-add-model-b)
 
-13. [**How to monitor**](#how-to-monitor)
+13. [**How to monitor**](#13-how-to-monitor)
 
-14. [**How to clean up**](#how-to-clean-up)
+14. [**How to clean up**](#14-how-to-clean-up)
 
 15. [**About CDK-Project**](#about-cdk-project)
 
