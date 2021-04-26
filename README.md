@@ -175,10 +175,10 @@ models/
 
 ## **5. Build Environment**
 
-1. Region = us-east-1
-1. Go to Cloud9
+1. Go to [Cloud9](https://console.aws.amazon.com/cloud9/home?region=us-east-1) in 'us-east-1'
    + Create Cloud9 Environment > us-east-1a > m5.large > EBS 100GB
-1. Go to CloudFormation : Check Status
+1. Go to [CloudFormation](https://console.aws.amazon.com/cloudformation/home?region=us-east-1)
+   + Check Status
 1. Go to Cloud 9, Click "Open IDE" > Click "bash - terminal" on the bottom
 1. run scripts 
 
@@ -192,7 +192,6 @@ models/
    mv model.tar.gz ../model/
    cd ../ 
    cp -r . ../model-b/
-   
    ```
 
 1. Create codecommit & Push codes
@@ -206,7 +205,8 @@ models/
    git commit -m "Update CICD Pipeline"
    git push alias-remote main
    ```
-1. Follow Section How to set up , How to provision , How to test
+   
+And then, follow Section How to set up , How to provision , How to test.
 
 
 
