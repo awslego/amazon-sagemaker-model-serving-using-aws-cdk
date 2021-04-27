@@ -18,7 +18,7 @@
                     "ModelS3Key":     "models/model-a/model"
                 },
                 {
-                    "ModelLocalPath": "models/model-a/model",
+                    "ModelLocalPath": "models/model-b/model",
                     "ModelS3Key":     "models/model-b/model"
                 }
             ]
