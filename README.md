@@ -324,7 +324,7 @@ git add *
 git commit -m "Update"
 git push alias-remote main
 ```
-
+Since codepipeline has already been created, just codecommit will automatically build and deploy.
 
 
 ## **10. How to change model and endpoint configration**
