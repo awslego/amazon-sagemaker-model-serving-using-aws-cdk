@@ -186,6 +186,8 @@ models/
    git clone https://github.com/awslego/amazon-sagemaker-model-serving-using-aws-cdk.git 
    cd amazon-sagemaker-model-serving-using-aws-cdk
    
+   sh script/resize.sh
+   
    aws s3 cp s3://textclassificationdemo-model-archiving-ap-northeast-2-51959/models/model-a/model/model.tar.gz models/model-a/src/
    cd models/model-a/src
    tar zxvf model.tar.gz
