@@ -320,8 +320,8 @@ sh script/trigger_tests.sh
 Push updated codes to codecommit. 
 ```bash
 git status
-git add config/app-config.json
-git commit -m "Update cdk config "
+git add *
+git commit -m "Update"
 git push alias-remote main
 ```
 
