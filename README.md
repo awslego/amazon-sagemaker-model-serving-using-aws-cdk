@@ -27,13 +27,11 @@ This repository provides AI/ML service(MachineLearning model serving) modernizat
 
 11. [**How to set up auto-scaling**](#11-how-to-set-up-auto-scaling)
 
-12. [**How to add model-b**](#12-how-to-add-model-b)
+12. [**How to monitor**](#12-how-to-monitor)
 
-13. [**How to monitor**](#13-how-to-monitor)
+13. [**How to clean up**](#13-how-to-clean-up)
 
-14. [**How to clean up**](#14-how-to-clean-up)
-
-15. [**About CDK-Project**](#about-cdk-project)
+14. [**About CDK-Project**](#about-cdk-project)
 
 
 
@@ -291,7 +289,7 @@ cdk synth
 
 Now, everything is ready, let's provision all stacks using AWS CDK. Execute the following command which will deploy all stacks in order of subordination.
 ```bash
-#sh script/deploy_stacks.sh
+#sh script/deploy_stacks.sh 
 cdk deploy *-ModelArchivingStack --require-approval never --profile default
 
 cdk deploy *-ModelServingStack --require-approval never --profile default
@@ -302,6 +300,13 @@ cdk deploy *-MonitorDashboardStack --require-approval never --profile default
 
 cdk deploy *-CICDPipelineStack --require-approval never --profile default
 ```
+
+This picture is a result of multiple(A/B Testing) model serving in SageMaker after ModelServingStack deployment.
+
+![MultipleModelServing](docs/asset/sagemaker_model_config_endpoint.png)
+
+
+
 
 ## **8. How to test**
 
@@ -398,90 +403,7 @@ We can activate/deactivate auto-scaling feature of SageMaker Endpoint. Since thi
         },
 ```
 
-## **12. How to add model-b**
-
-After preparing a new folder(models/model-b/model), add it to ***app-config.json*** like this:
-
-In ModelArchivingStack
-
-```json
-        "ModelArchiving": {
-            "Name": "ModelArchivingStack",
-
-            "BucketBaseName": "model-archiving",
-            "ModelList": [
-                {
-                    "ModelLocalPath": "models/model-a/model",
-                    "ModelS3Key":     "models/model-a/model"
-                },
-                {
-                    "ModelLocalPath": "models/model-b/model",
-                    "ModelS3Key":     "models/model-b/model"
-                }
-            ]
-        }
-```
-
-In ModelServingStack
-
-```json
-"ModelServing": {
-            "Name": "ModelServingStack",
-
-            "ModelList": [
-                {
-                    "ModelName":   "Model-A-20210117a",
-                    "ModelS3Key":     "models/model-a/model",
-                    "ModelDockerImage": "763104351884.dkr.ecr.us-east-1.amazonaws.com/pytorch-inference:1.4.0-cpu-py36-ubuntu16.04",
-                    
-                    "VariantName": "Model-A",
-                    "VariantWeight": 1,
-                    "InstanceCount": 1,
-                    "InstanceType": "ml.c4.xlarge",
-
-                    "AutoScalingEnable": false,
-                    "AutoScalingMinCapacity": 1,
-                    "AutoScalingMaxCapacity": 3,
-                    "AutoScalingTargetInvocation": 70
-                },
-                {
-                    "ModelName":   "Model-B-20210117a",
-                    "ModelS3Key":     "models/model-b/model",
-                    "ModelDockerImage": "763104351884.dkr.ecr.us-east-1.amazonaws.com/pytorch-inference:1.4.0-cpu-py36-ubuntu16.04",
-                    
-                    "VariantName": "Model-B",
-                    "VariantWeight": 1,
-                    "InstanceCount": 1,
-                    "InstanceType": "ml.m4.xlarge",
-
-                    "AutoScalingEnable": false,
-                    "AutoScalingMinCapacity": 2,
-                    "AutoScalingMaxCapacity": 4,
-                    "AutoScalingTargetInvocation": 50
-                }
-            ],
-
-            "EndpointConfigName":   "TextClassification-20210117c",
-            "BucketBaseName": "model-serving",
-
-            "EndpointName":      "TextClassification",
-            "Deploy": true
-        },
-```
-
-Don't forget to execute ***pack_models.sh*** to compress model files. In ***pack_models.sh*** file, the following item must be changed.
-
-```bash
-# MODEL_ROOT=models/model-a
-MODEL_ROOT=models/model-b
-```
-
-This picture is a result of multiple(A/B Testing) model serving in SageMaker.
-
-![MultipleModelServing](docs/asset/sagemaker_model_config_endpoint.png)
-
-
-## **13. How to monitor**
+## **12. How to monitor**
 
 After a while, go to CloudWatch Dashboard(TextClassificationDemo-MonitorDashboard, TextClassificationDemo-TesterDashboard) and check the results.
 
@@ -539,7 +461,7 @@ sh script/deploy_stacks.sh
 sh script/trigger_tests.sh
 ```
 
-## **14. How to clean up**
+## **13. How to clean up**
 
 Execute the following command, which will destroy all resources except S3 Buckets. So destroy these resources in AWS web console manually.
 
